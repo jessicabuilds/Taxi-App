@@ -14,7 +14,8 @@ export class RideEstimateController {
         });
       }
 
-      // criar o historico de corrida
+      // retornar motoristas disponiveis
+      // valor total da corrida
 
       const routes = await RideEstimateService.getRideEstimate(
         origin,

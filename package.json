@@ -5,6 +5,7 @@
   "main": "./src/index.ts",
   "type": "commonjs",
   "scripts": {
+    "start:dev": "nodemon src/index.ts",
     "start": "node dist/index.js",
     "build": "tsc",
     "dev": "nodemon",
