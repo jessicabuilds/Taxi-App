@@ -3,16 +3,23 @@ import {
   DirectionsResponse,
   DirectionsRequest,
 } from '../interfaces/google-maps.interface';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 export class GoogleMapsService {
   private static baseUrl = 'https://routes.googleapis.com';
-  private static apiKey = process.env.GOOGLE_API_KEY || '';
+  private static apiKey = process.env.GOOGLE_API_KEY;
 
   static async getDirections(
     origin: string,
     destination: string,
   ): Promise<DirectionsResponse['routes']> {
     try {
+      if (!this.apiKey) {
+        throw new Error('A chave de API do Google Maps precisa ser fornecida.');
+      }
+
       const url = `${this.baseUrl}/directions/v2:computeRoutes?key=${this.apiKey}`;
 
       const request: DirectionsRequest = {

@@ -6,12 +6,18 @@
       "request": "launch",
       "name": "Modo Debug",
       "runtimeExecutable": "nodemon",
-      "args": ["-r", "tsconfig-paths/register", "./src/index.ts"],
+      "args": [
+        "-r",
+        "ts-node/register/transpile-only",
+        "-r",
+        "tsconfig-paths/register",
+        "./src/index.ts"
+      ],
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
       "skipFiles": ["<node_internals>/**"],
       "sourceMaps": true,
-      "outFiles": ["${workspaceFolder}/dist/**/*.js"],
+      "outFiles": ["${workspaceFolder}/src/**/*.ts"],
       "watch": true
     }
   ]
