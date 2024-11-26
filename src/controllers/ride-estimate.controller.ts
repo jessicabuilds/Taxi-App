@@ -14,19 +14,43 @@ export class RideEstimateController {
         });
       }
 
-      // retornar motoristas disponiveis
-      // valor total da corrida
-
-      const routes = await RideEstimateService.getRideEstimate(
+      const rideEstimate = await RideEstimateService.getRideEstimate(
         origin,
         destination,
       );
 
-      return res.json({ success: true, routes });
+      const drivers = await RideEstimateService.availableDrivers(
+        rideEstimate.distance,
+      );
+
+      const driversWithValues = await Promise.all(
+        drivers.map(async (driver) => ({
+          ...driver,
+          value: await RideEstimateService.calculateValue(
+            rideEstimate.distance,
+            driver.rate_per_km,
+          ),
+        })),
+      );
+
+      return res.json({
+        success: true,
+        origin: rideEstimate.origin,
+        destination: rideEstimate.destination,
+        distance: rideEstimate.distance,
+        duration: rideEstimate.duration,
+        options: driversWithValues.map((driver) => {
+          const { rate_per_km, ...driverDetails } = driver;
+          return driverDetails;
+        }),
+        routeResponse: rideEstimate.routeResponse,
+      });
     } catch (error) {
       return res.status(400).json({
         success: false,
-        error: (error as Error).message,
+        error_code: 'INVALID_DATA',
+        error_description:
+          'Os dados fornecidos no corpo da requisição são inválidos',
       });
     }
   }

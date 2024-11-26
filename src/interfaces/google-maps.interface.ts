@@ -3,10 +3,8 @@ export interface DirectionsResponse {
     legs: Array<{
       startLocation: Location;
       endLocation: Location;
-      distance?: { text: string; value: number };
-      duration?: { text: string; value: number };
-      start_address?: string;
-      end_address?: string;
+      start_address: string;
+      end_address: string;
     }>;
     distanceMeters: number;
     duration: string;

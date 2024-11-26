@@ -1,5 +1,5 @@
+import { DriverRepository } from '../repositories/driver.repository';
 import { GoogleMapsService } from './google-maps.service';
-import { DirectionsResponse } from '../interfaces/google-maps.interface';
 
 export class RideEstimateService {
   private static validateParameters(origin: any, destination: any): void {
@@ -22,15 +22,60 @@ export class RideEstimateService {
     }
   }
 
-  static async getRideEstimate(
-    origin: any,
-    destination: any,
-  ): Promise<DirectionsResponse['routes']> {
+  static async getRideEstimate(origin: any, destination: any) {
     this.validateParameters(origin, destination);
 
-    return await GoogleMapsService.getDirections(
+    const routeResponse = await GoogleMapsService.getDirections(
       origin.address,
       destination.address,
     );
+
+    const route = routeResponse[0];
+    const originCoordinates = route.legs[0].startLocation.latLng;
+    const destinationCoordinates = route.legs[0].endLocation.latLng;
+
+    const distance = route.distanceMeters;
+    const duration = route.duration;
+
+    return {
+      origin: {
+        latitude: originCoordinates.latitude,
+        longitude: originCoordinates.longitude,
+      },
+      destination: {
+        latitude: destinationCoordinates.latitude,
+        longitude: destinationCoordinates.longitude,
+      },
+      distance,
+      duration,
+      routeResponse,
+    };
+  }
+
+  static async availableDrivers(distanceMeters: number) {
+    const options = await DriverRepository.getAllDrivers();
+
+    const availableDrivers = options.filter(
+      (driver) => distanceMeters >= driver.min_km,
+    );
+
+    return availableDrivers.map((driver) => ({
+      id: driver.id,
+      name: driver.name,
+      description: driver.description,
+      vehicle: driver.car,
+      review: {
+        rating: Number(driver.rating),
+        comment: driver.feedback,
+      },
+      rate_per_km: driver.rate_per_km,
+    }));
+  }
+
+  static async calculateValue(
+    distanceMeters: number,
+    rate_per_km: number | undefined,
+  ) {
+    return Number(((distanceMeters / 1000) * Number(rate_per_km)).toFixed(2));
   }
 }
