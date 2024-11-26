@@ -9,6 +9,18 @@ CREATE TABLE IF NOT EXISTS drivers (
     min_km INTEGER NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS rides (
+    id SERIAL PRIMARY KEY,
+    customer_id INTEGER NOT NULL,
+    origin VARCHAR(255) NOT NULL,
+    destination VARCHAR(255) NOT NULL,
+    distance DECIMAL(10, 2) NOT NULL,
+    duration VARCHAR(50) NOT NULL,
+    driver_id INTEGER NOT NULL,
+    driver_name VARCHAR(255) NOT NULL,
+    value DECIMAL(10, 2) NOT NULL
+);
+
 INSERT INTO drivers (name, description, car, rating, comment, rate_per_km, min_km)
 VALUES
     ('Homer Simpson', 'Olá! Sou o Homer, seu motorista camarada! Relaxe e aproveite o passeio, com direito a rosquinhas e boas risadas (e talvez alguns desvios).', 'Plymouth Valiant 1973 rosa e enferrujado', '2/5', 'Motorista simpático, mas errou o caminho 3 vezes. O carro cheira a donuts.', 2.50, 1),
