@@ -48,4 +48,52 @@ export class DriverRepository {
     const query = 'DELETE FROM drivers WHERE id = $1';
     await pool.query(query, [id]);
   }
+
+  static async findRides(
+    customerId: number,
+    driverId?: number,
+  ): Promise<any[]> {
+    let query = `
+        SELECT 
+            r.id, 
+            r.origin, 
+            r.destination, 
+            r.distance, 
+            r.duration, 
+            r.value, 
+            r.driver_id,
+            d.name AS driver_name
+        FROM rides r
+        INNER JOIN drivers d ON r.driver_id = d.id
+        WHERE r.customer_id = $1
+    `;
+
+    const params: any[] = [customerId];
+
+    if (driverId) {
+      query += ' AND r.driver_id = $2';
+      params.push(driverId);
+    }
+
+    query += ' ORDER BY r.id DESC';
+
+    try {
+      const { rows } = await pool.query(query, params);
+      return rows.map((row) => ({
+        id: row.id,
+        origin: row.origin,
+        destination: row.destination,
+        distance: row.distance,
+        duration: row.duration,
+        value: row.value,
+        driver: {
+          id: row.driver_id,
+          name: row.driver_name,
+        },
+      }));
+    } catch (error) {
+      console.error('Erro ao executar query:', error);
+      throw error;
+    }
+  }
 }

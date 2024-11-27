@@ -3,19 +3,19 @@ import { GoogleMapsService } from './google-maps.service';
 
 export class RideEstimateService {
   private static validateParameters(origin: any, destination: any): void {
-    if (!origin.address || typeof origin.address !== 'string') {
+    if (!origin || typeof origin !== 'string') {
       throw new Error(
         'O parâmetro "origin" é inválido. Deve ser uma string não vazia.',
       );
     }
 
-    if (!destination.address || typeof destination.address !== 'string') {
+    if (!destination || typeof destination !== 'string') {
       throw new Error(
         'O parâmetro "destination" é inválido. Deve ser uma string não vazia.',
       );
     }
 
-    if (origin.address === destination.address) {
+    if (origin === destination) {
       throw new Error(
         'Os valores de "origin" e "destination" não podem ser iguais.',
       );
@@ -26,8 +26,8 @@ export class RideEstimateService {
     this.validateParameters(origin, destination);
 
     const routeResponse = await GoogleMapsService.getDirections(
-      origin.address,
-      destination.address,
+      origin,
+      destination,
     );
 
     const route = routeResponse[0];
@@ -65,7 +65,7 @@ export class RideEstimateService {
       description: driver.description,
       vehicle: driver.car,
       review: {
-        rating: Number(driver.rating),
+        rating: driver.rating,
         comment: driver.feedback,
       },
       rate_per_km: driver.rate_per_km,
@@ -77,5 +77,14 @@ export class RideEstimateService {
     rate_per_km: number | undefined,
   ) {
     return Number(((distanceMeters / 1000) * Number(rate_per_km)).toFixed(2));
+  }
+
+  static async getRides(customerId: number, driverId?: number): Promise<any[]> {
+    try {
+      return await DriverRepository.findRides(customerId, driverId);
+    } catch (error) {
+      console.error('Erro no serviço RideService:', error);
+      throw error;
+    }
   }
 }
