@@ -17,6 +17,7 @@ export class RideConfirmController {
       duration,
       driver,
       value,
+      date_created,
     } = req.body;
 
     try {
@@ -28,6 +29,7 @@ export class RideConfirmController {
         duration,
         driver,
         value,
+        date_created,
       });
 
       return res

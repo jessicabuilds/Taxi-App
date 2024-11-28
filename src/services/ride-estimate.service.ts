@@ -56,7 +56,7 @@ export class RideEstimateService {
     const options = await DriverRepository.getAllDrivers();
 
     const availableDrivers = options.filter(
-      (driver) => distanceMeters >= driver.min_km,
+      (driver) => driver.min_km <= distanceMeters / 1000,
     );
 
     return availableDrivers.map((driver) => ({

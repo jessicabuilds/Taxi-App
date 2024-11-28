@@ -16,6 +16,7 @@ export class RideConfirmService {
     duration: string;
     driver: { id: number; name: string };
     value: number;
+    date_created: string;
   }): Promise<void> {
     const { customer_id, origin, destination, distance, driver, value } =
       rideData;

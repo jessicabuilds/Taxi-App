@@ -18,7 +18,8 @@ CREATE TABLE IF NOT EXISTS rides (
     duration VARCHAR(50) NOT NULL,
     driver_id INTEGER NOT NULL,
     driver_name VARCHAR(255) NOT NULL,
-    value DECIMAL(10, 2) NOT NULL
+    value DECIMAL(10, 2) NOT NULL,
+    date_created VARCHAR(255) NOT NULL
 );
 
 INSERT INTO drivers (name, description, car, rating, comment, rate_per_km, min_km)

@@ -62,7 +62,8 @@ export class DriverRepository {
             r.duration, 
             r.value, 
             r.driver_id,
-            d.name AS driver_name
+            d.name AS driver_name,
+            r.date_created
         FROM rides r
         INNER JOIN drivers d ON r.driver_id = d.id
         WHERE r.customer_id = $1
@@ -90,6 +91,7 @@ export class DriverRepository {
           id: row.driver_id,
           name: row.driver_name,
         },
+        date_created: row.date_created,
       }));
     } catch (error) {
       console.error('Erro ao executar query:', error);
